@@ -7,10 +7,10 @@ function App() {
 
   return (
     <main>
-      <div>
+      <div className='wrapper'>
         <h1>Task</h1>
-        <SliderBlock colors={rainbowColors} />
-        <SliderBlock colors={pupleColors}/>
+        <SliderBlock colors={rainbowColors} width='80%' height='60px' />
+        <SliderBlock colors={pupleColors} width='50%' height='120px' />
       </div>
     </main>
   );

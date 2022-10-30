@@ -6,13 +6,13 @@ const SliderBlock = function ({ colors, width, height }) {
 
   return (
     <>
-      <div>
+      <div className='card-wrapper'>
         <p>{action}</p>
-        <div>
-          <div>
+        <div className='cards' style={{ width: width, height: height }}>
+          <div className='card'>
             {colors[currentIndex]}
           </div>
-          <div>
+          <div className='card'>
             {colors[currentIndex + 1]}
           </div>
         </div>
