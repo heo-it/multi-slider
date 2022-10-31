@@ -1,10 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
 import useInterval from '../hooks/useInterval';
 import styled from '@emotion/styled';
+import useSwipe from '../hooks/useSwipe';
 
 const Slider = function ({ colors, width, height }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const currentDom = useRef(null);
+
+  const {
+    swipeEvents,
+  } = useSwipe(currentDom);
 
   /**
    * @description 자동 슬라이드 기능
@@ -43,6 +48,7 @@ const Slider = function ({ colors, width, height }) {
         ref={currentDom}
         color={colors[currentIndex]}
         isCurrent={true}
+        onClick={swipeEvents.click}
       >
         {colors[currentIndex]}
       </SliderItem>
