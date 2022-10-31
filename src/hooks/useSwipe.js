@@ -35,6 +35,37 @@ export default function useSwipe(colors) {
   }, isDragging ? null : 3100);
 
   /**
+   * @description 카드 드래그 시 요소 이동 기능
+   */
+  const handleSwipeStart = e => {
+    setIsDragging(true);
+    startX.current = getClientX(e);
+  }
+
+  const handleSwipeEnd = e => {
+    startX.current = null;
+    setIsDragging(false);
+
+    if (cardX === 0) return;
+    if (isDragging && !isNaN(cardX) && isFinite(cardX)) {
+      if (Math.abs(cardX) < 50) {
+        setCardX(0);
+      } else if (cardX < 0) {
+        setCardX(-100);
+      } else {
+        setCardX(100);
+      }
+    }
+  }
+
+  const handleSwipe = e => {
+    if (startX.current) {
+      setCardX((getClientX(e) - startX.current) / parentWidth * 100);
+      if (!isDragging) setIsDragging(true);
+    }
+  };
+
+  /**
    * @description 카드 클릭시 카드 색상 출력 기능
    */
   const handleClick = e => {
@@ -47,6 +78,12 @@ export default function useSwipe(colors) {
     cardX,
     handleSlide,
     swipeEvents: {
+      onMouseDown: handleSwipeStart,
+      onMouseUp: handleSwipeEnd,
+      onMouseMove: handleSwipe,
+      onTouchMove: handleSwipe,
+      onTouchEnd: handleSwipeEnd,
+      onMouseLeave: handleSwipeEnd,
       onClick: handleClick,
     }
   }
