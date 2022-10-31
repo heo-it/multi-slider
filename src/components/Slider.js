@@ -1,77 +1,39 @@
-import React, { useEffect, useState, useRef } from 'react';
-import useInterval from '../hooks/useInterval';
+import React from 'react';
 import styled from '@emotion/styled';
 import useSwipe from '../hooks/useSwipe';
 
 const Slider = function ({ colors, width, height }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const currentDom = useRef(null);
-
   const {
+    currentIndex,
+    cardX,
     swipeEvents,
-  } = useSwipe(currentDom);
-
-  /**
-   * @description 자동 슬라이드 기능
-   */
-  function handleSlide(index) {
-    if (index < colors.length - 1) {
-      return index + 1;
-    } else {
-      return 0;
-    }
-  }
-
-  useInterval(() => {
-    currentDom.current.style = animationStyle(colors[currentIndex]);
-  }, 3000);
-
-  useInterval(() => {
-    /** handle Index */
-    setCurrentIndex(prev => handleSlide(prev));
-  }, 3100);
-
-  useEffect(() => {
-    currentDom.current.style = orgStyle(colors[currentIndex]);
-  }, [currentIndex]);
+    handleSlide,
+  } = useSwipe(colors);
 
   return (
-    <div className='cards' style={{ width: width, height: height }}>
-      <SliderItem
-        color={colors[handleSlide(currentIndex)]}
-        isNext={true}
-      >
-        {colors[handleSlide(currentIndex)]}
-      </SliderItem>
-      <SliderItem
-        id='card'
-        ref={currentDom}
-        color={colors[currentIndex]}
-        isCurrent={true}
-        onClick={swipeEvents.click}
-      >
-        {colors[currentIndex]}
-      </SliderItem>
-    </div>
+    <>
+      <div className='card-wrapper'>
+        <p>{action}</p>
+        <div className='cards' style={{ width: width, height: height }}>
+          <SliderItem color={colors[handleSlide(currentIndex)]}>
+            {colors[handleSlide(currentIndex)]}
+          </SliderItem>
+          <SliderItem
+            id='card'
+            color={colors[currentIndex]}
+            cardX={cardX}
+            {...swipeEvents}
+          >
+            {colors[currentIndex]}
+          </SliderItem>
+        </div>
+      </div>
+      <code>{`[${colors.toString()}]`}</code>
+    </>
   )
 }
 
 export default Slider;
-
-
-const animationStyle = color => `
-  background-color:${color};
-  transform: translate3d(100%, 0, 0);
-  opacity: 0;
-  transition: 0.3s ease 0s
-`;
-
-const orgStyle = color => `
-  background-color:${color};
-  transform: translate3d(0%, 0, 0);
-  opacity: 1;
-  transition: ''
-`;
 
 const SliderItem = styled.div`
   width: 100%;
@@ -80,5 +42,7 @@ const SliderItem = styled.div`
   border-radius: 4px;
   box-shadow: 0px 0px 1px 1px rgb(0 0 0 / 20%);
   background-color: ${({ color }) => color};
-  transform: translate3d(0%, 0, 0);
+  transform: translate3d(${({ cardX }) => cardX}%, 0, 0);
+  opacity: ${({ cardX }) => Math.abs(cardX) === 100 ? 0 : 1};
+  transition: ${({ cardX }) => Math.abs(cardX) === 100 ? '0.3s ease 0s' : ''};
 `;

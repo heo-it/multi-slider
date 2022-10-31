@@ -1,16 +1,17 @@
 import './App.css';
-import SliderBlock from './components/SliderBlock';
+import Slider from './components/Slider';
+
+const rainbowColors = ["red", "orange", "green", "blue"];
+const pupleColors = ["indigo", "purple"];
 
 function App() {
-  const rainbowColors = ["red", "orange", "green", "blue"];
-  const pupleColors = ["indigo", "purple"];
 
   return (
     <main>
       <div className='wrapper'>
         <h1>Task</h1>
-        <SliderBlock colors={rainbowColors} width='80%' height='60px' />
-        <SliderBlock colors={pupleColors} width='50%' height='120px' />
+        <Slider colors={rainbowColors} width='80%' height='60px' />
+        <Slider colors={pupleColors} width='50%' height='120px' />
       </div>
     </main>
   );
