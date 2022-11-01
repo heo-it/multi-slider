@@ -46,8 +46,8 @@ export default function useSwipe(colors) {
   }
 
   const handleSwipeEnd = e => {
-    startX.current = null;
     setIsDragging(false);
+    startX.current = null;
 
     if (cardX === 0) return;
     if (isDragging && !isNaN(cardX) && isFinite(cardX)) {
@@ -64,8 +64,9 @@ export default function useSwipe(colors) {
 
   const handleSwipe = e => {
     if (startX.current) {
-      setCardX((getClientX(e) - startX.current) / parentWidth * 100);
       if (!isDragging) setIsDragging(true);
+      setCardX((getClientX(e) - startX.current) / parentWidth * 100);
+
       if (cardX !== 0) setAction(`SWIPE ${cardX > 0 ? 'RIGHT' : 'LEFT'}`);
     }
   };
