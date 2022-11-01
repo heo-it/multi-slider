@@ -114,6 +114,7 @@ export default function useSwipe(colors) {
       onMouseDown: handleSwipeStart,
       onMouseUp: handleSwipeEnd,
       onMouseMove: handleSwipe,
+      onTouchStart: handleSwipeStart,
       onTouchMove: handleSwipe,
       onTouchEnd: handleSwipeEnd,
       onMouseLeave: handleSwipeEnd,
