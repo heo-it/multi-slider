@@ -3,12 +3,20 @@ import useInterval from '../hooks/useInterval';
 
 const parentWidth = 480;
 
+const AUTO_TRANSITION = 'AUTO TRANSITION';
+const CANCEL = 'CANCEL';
+const SWIPE_RIGHT = 'SWIPE_RIGHT';
+const SWIPE_LEFT = 'SWIPE_LEFT';
+const FILP_RIGHT = 'FILP_RIGHT';
+const FILP_LEFT = 'FILP_LEFT';
+
 export default function useSwipe(colors) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const startX = useRef(0);
   const [isDragging, setIsDragging] = useState(false);
   const [cardX, setCardX] = useState(0);
-  const [action, setAction] = useState('AUTO TRANSITION');
+  const [action, setAction] = useState(AUTO_TRANSITION);
+  const timestamp = useRef(0);
 
   const getClientX = e => {
     if (e.type === 'touchstart') return e.touches[0].clientX;
@@ -32,7 +40,7 @@ export default function useSwipe(colors) {
   }, isDragging ? null : 3000);
 
   useInterval(() => {
-    setAction('AUTO TRANSITION');
+    setAction(AUTO_TRANSITION);
     setCurrentIndex(prev => handleSlide(prev));
     setCardX(0);
   }, isDragging ? null : 3100);
@@ -53,7 +61,7 @@ export default function useSwipe(colors) {
     if (isDragging && !isNaN(cardX) && isFinite(cardX)) {
       if (Math.abs(cardX) < 50) {
         setCardX(0);
-        setAction('CANCEL');
+        setAction(CANCEL);
       } else if (cardX < 0) {
         setCardX(-100);
       } else {
@@ -65,9 +73,24 @@ export default function useSwipe(colors) {
   const handleSwipe = e => {
     if (startX.current) {
       if (!isDragging) setIsDragging(true);
-      setCardX((getClientX(e) - startX.current) / parentWidth * 100);
+      /**
+       * @description Filp 기능 구현
+       */
+      const now = Date.now();
+      const currentX = (getClientX(e) - startX.current) / parentWidth * 100;
 
-      if (cardX !== 0) setAction(`SWIPE ${cardX > 0 ? 'RIGHT' : 'LEFT'}`);
+      const dt = now - timestamp.current;
+      const distance = currentX - cardX;
+
+      const speed = (distance / dt).toFixed(2);
+      timestamp.current = now;
+      setCardX(currentX);
+
+      if (cardX > 0) {
+        setAction(`${speed > 0.5 ? FILP_RIGHT : SWIPE_RIGHT}`);
+      } else if (cardX < 0) {
+        setAction(`${speed > 0.5 ? FILP_LEFT : SWIPE_LEFT}`);
+      }
     }
   };
 
@@ -75,7 +98,7 @@ export default function useSwipe(colors) {
    * @description 카드 클릭시 카드 색상 출력 기능
    */
   const handleClick = e => {
-    if (action === 'AUTO TRANSITION') {
+    if (action === AUTO_TRANSITION) {
       alert(`CLICK : ${colors[currentIndex]}`);
     } else {
       e.preventDefault();
