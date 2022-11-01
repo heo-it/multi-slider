@@ -89,7 +89,7 @@ export default function useSwipe(colors) {
       if (cardX > 0) {
         setAction(`${speed > 0.5 ? FILP_RIGHT : SWIPE_RIGHT}`);
       } else if (cardX < 0) {
-        setAction(`${speed > 0.5 ? FILP_LEFT : SWIPE_LEFT}`);
+        setAction(`${speed < -0.5 ? FILP_LEFT : SWIPE_LEFT}`);
       }
     }
   };
