@@ -44,6 +44,6 @@ const SliderItem = styled.div`
   cursor: pointer;
   background-color: ${({ color }) => color};
   transform: translate3d(${({ cardX }) => cardX}%, 0, 0);
-  opacity: ${({ cardX }) => Math.abs(cardX) === 100 ? 0 : 1};
+  opacity: ${({ cardX }) => 1 - Math.abs(cardX) / 100};
   transition: ${({ cardX }) => Math.abs(cardX) === 100 ? '0.3s ease 0s' : ''};
 `;
