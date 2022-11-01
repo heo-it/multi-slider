@@ -8,6 +8,8 @@ export default function useSwipe(colors) {
   const startX = useRef(0);
   const [isDragging, setIsDragging] = useState(false);
   const [cardX, setCardX] = useState(0);
+  const [action, setAction] = useState('AUTO TRANSITION');
+
   const getClientX = e => {
     if (e.type === 'touchstart') return e.touches[0].clientX;
     if (e.changedTouches) return e.changedTouches[0].clientX;
@@ -30,6 +32,7 @@ export default function useSwipe(colors) {
   }, isDragging ? null : 3000);
 
   useInterval(() => {
+    setAction('AUTO TRANSITION');
     setCurrentIndex(prev => handleSlide(prev));
     setCardX(0);
   }, isDragging ? null : 3100);
@@ -50,6 +53,7 @@ export default function useSwipe(colors) {
     if (isDragging && !isNaN(cardX) && isFinite(cardX)) {
       if (Math.abs(cardX) < 50) {
         setCardX(0);
+        setAction('CANCEL');
       } else if (cardX < 0) {
         setCardX(-100);
       } else {
@@ -62,6 +66,7 @@ export default function useSwipe(colors) {
     if (startX.current) {
       setCardX((getClientX(e) - startX.current) / parentWidth * 100);
       if (!isDragging) setIsDragging(true);
+      if (cardX !== 0) setAction(`SWIPE ${cardX > 0 ? 'RIGHT' : 'LEFT'}`);
     }
   };
 
@@ -69,13 +74,17 @@ export default function useSwipe(colors) {
    * @description 카드 클릭시 카드 색상 출력 기능
    */
   const handleClick = e => {
-    alert(`CLICK : ${target.current.innerText}`);
+    if (action === 'AUTO TRANSITION') {
+      alert(`CLICK : ${colors[currentIndex]}`);
+    } else {
       e.preventDefault();
+    }
   }
 
   return {
     currentIndex,
     cardX,
+    action,
     handleSlide,
     swipeEvents: {
       onMouseDown: handleSwipeStart,

@@ -6,6 +6,7 @@ const Slider = function ({ colors, width, height }) {
   const {
     currentIndex,
     cardX,
+    action,
     swipeEvents,
     handleSlide,
   } = useSwipe(colors);
